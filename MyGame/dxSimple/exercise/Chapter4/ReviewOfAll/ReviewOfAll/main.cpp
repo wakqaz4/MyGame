@@ -7,7 +7,7 @@
 * project(ReorganizeOfAll)
 *	I intend to finish this program with the following 7 steps:
 *	1. Finish with basic functions, such as d3d9 ,dinput8, playSound, font;
-*	2. Draw a sphere and a cube with colored vertices&indices, with fixed camera;
+*	2. Draw a sphere with colored vertices&indices, with fixed camera;
 *	3. Draw a cube with UV texture and a teapot with d3dxMesh;
 *	4. Load mesh from .X file with texture and material, and form light;
 *	5. Form flexible camera with dInput8;
@@ -53,12 +53,15 @@ LPDIRECTINPUTDEVICE8 gPKeyboard = nullptr;
 DIMOUSESTATE gDIMouseState;
 char gKeyboardBuffer[256]{0};
 float gFormatRectChange = 0.0f;
+LPDIRECT3DVERTEXBUFFER9 gPVertexBuffer = nullptr;
+LPDIRECT3DINDEXBUFFER9 gPIndexBuffer = nullptr;
 
 struct ScolorVertex
 {
 	float x;
 	float y;
 	float z;
+//	float rhw;
 	DWORD color;
 };
 
@@ -126,6 +129,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		break;
 	case WM_PAINT:
+		Direct3DUpdate(hwnd);
 		Direct3DRender(hwnd);
 		ValidateRect(hwnd, nullptr);
 		break;
@@ -167,7 +171,7 @@ bool Direct3DInit(HWND hwnd)
 	d3dpp.BackBufferWidth = WINDOW_WIDTH;
 	d3dpp.BackBufferHeight = WINDOW_HEIGHT;
 	d3dpp.BackBufferFormat = D3DFMT_A8R8G8B8;
-	d3dpp.BackBufferCount = 2;
+	d3dpp.BackBufferCount = 1;
 	d3dpp.MultiSampleType = D3DMULTISAMPLE_NONE;
 	d3dpp.MultiSampleQuality = 0;
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
@@ -213,18 +217,73 @@ bool DirectInputInit(HWND hwnd, HINSTANCE hInstance)
 
 bool ObjectInit()
 {
+	srand(unsigned(time(nullptr)));
 	PlaySound(_T("孙燕姿 - 天使的指纹.wav"), nullptr, SND_ASYNC | SND_FILENAME | SND_LOOP);
 	D3DXCreateFont(gPD3DDevice, 38, 0, 0, 0, 0, 0, 0, 0, 0, _T("楷体"), &gPFont);
+	//draw a sphere, 16 triangles per circle.So there should be 16*(16/2+1) = 144 vertices
+	//and there should be 16*16 triangles, so 16*16*3 indices.
+	ScolorVertex vertices[144];
+	float sphereRadius = 50.0f;
+	for (int i = 0; i < 16; i++)
+	{
+		for (int j = 0; j < 9; j++)
+		{
+			vertices[i * 9 + j].x = sphereRadius*sin(D3DX_PI / 8 * j)*cos(D3DX_PI / 8 * i);
+			vertices[i * 9 + j].y = sphereRadius*(-cos(D3DX_PI/8*j));
+			vertices[i * 9 + j].z = sphereRadius*sin(D3DX_PI / 8 * j)*sin(D3DX_PI / 8 * i);
+//			vertices[i * 9 + j].rhw = 1.0f;
+			vertices[i * 9 + j].color = D3DCOLOR_XRGB(11, 222, 1);
+		}
+	}
 
+	gPD3DDevice->CreateVertexBuffer(sizeof(vertices), 0, D3DFVF_COLOR_VERTEX, D3DPOOL_DEFAULT, &gPVertexBuffer, nullptr);
+	void* pVertex;
+	gPVertexBuffer->Lock(0, sizeof(vertices), (void**)&pVertex, 0);
+	memcpy(pVertex, vertices, sizeof(vertices));
+	gPVertexBuffer->Unlock();	
+
+	int indices[768];
+	for (int i = 0; i < 16; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			if (i == 15)
+			{
+				indices[(i * 8 + j) * 6 + 0] = i * 9 + j;
+				indices[(i * 8 + j) * 6 + 1] = j;
+				indices[(i * 8 + j) * 6 + 2] = j + 1;
+				indices[(i * 8 + j) * 6 + 3] = i * 9 + j;
+				indices[(i * 8 + j) * 6 + 4] = i * 9 + j +1;
+				indices[(i * 8 + j) * 6 + 5] = j + 1;
+			}
+			else
+			{
+				indices[(i * 8 + j) * 6 + 0] = i * 9 + j;
+				indices[(i * 8 + j) * 6 + 1] = (i + 1) * 9 + j;
+				indices[(i * 8 + j) * 6 + 2] = (i + 1) * 9 + j + 1;
+				indices[(i * 8 + j) * 6 + 3] = i * 9 + j;
+				indices[(i * 8 + j) * 6 + 4] = i * 9 + j + 1;
+				indices[(i * 8 + j) * 6 + 5] = (i + 1) * 9 + j + 1;
+			}			
+		}
+	}
+
+	gPD3DDevice->CreateIndexBuffer(sizeof(indices), 0, D3DFMT_INDEX32, D3DPOOL_DEFAULT, &gPIndexBuffer, nullptr);
+	void* pIndex;
+	gPIndexBuffer->Lock(0, 0, (void**)&pIndex, 0);
+	memcpy(pIndex, indices, sizeof(indices));
+	gPIndexBuffer->Unlock();
+
+	gPD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
+	gPD3DDevice->SetRenderState(D3DRS_CULLMODE, false);   //关掉背面消隐，无论是否顺时针，随机的那个三角形都会显示。 
+	//gPD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);   //开启背面消隐
+	//gPD3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESS);   //将深度测试函数设为D3DCMP_LESS
+	//gPD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, true);     //深度测试成功后，更新深度缓存
 
 	return true;
 }
 void MatrixSet()
 {
-	D3DXMATRIX matWorld;
-	D3DXMatrixIdentity(&matWorld);
-	gPD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
-
 	D3DXMATRIX matView;
 	D3DXVECTOR3 vEye(0.0f, 0.0f, -300.0f);
 	D3DXVECTOR3 vAt(0.0f, 0.0f, 0.0f);
@@ -286,14 +345,45 @@ void Direct3DRender(HWND hwnd)
 	RECT formatRect;
 	GetClientRect(hwnd, &formatRect);
 
-	gPD3DDevice->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(24, 212, 33), 1.0f, 0);
+	gPD3DDevice->Clear(0, nullptr, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 0);
+	gPD3DDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
 	gPD3DDevice->BeginScene();
 	MatrixSet();
 
+	D3DXMATRIX matWorld;	
+	static float rx = 0;
+	static float ry = 0;
+	D3DXMATRIX rotX;
+	D3DXMATRIX rotY;
+	if (gKeyboardBuffer[DIK_W] & 0x80)
+	{
+		rx += 0.001f;
+	}
+	if (gKeyboardBuffer[DIK_S] & 0x80)
+	{
+		 rx -= 0.001f;
+	}
+	if (gKeyboardBuffer[DIK_A] & 0x80)
+	{
+		ry += 0.001f;
+	}
+	if (gKeyboardBuffer[DIK_D] & 0x80)
+	{
+		ry -= 0.001f;
+	}	
+	D3DXMatrixRotationX(&rotX, rx);
+	D3DXMatrixRotationY(&rotY, ry);
+	matWorld = rotX*rotY;
+	gPD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
+
 	formatRect.top -= gFormatRectChange;
-	gPFont->DrawTextW(nullptr, _T("Tayler is swift"), -1, &formatRect, DT_TOP | DT_LEFT, D3DCOLOR_XRGB(46, 2, 111));
+	gPFont->DrawTextW(nullptr, _T("Tayler is swift"), -1, &formatRect, DT_TOP | DT_LEFT, D3DCOLOR_XRGB(11,222, 1));
 
-
+	gPD3DDevice->SetStreamSource(0, gPVertexBuffer, 0, sizeof(ScolorVertex));
+	gPD3DDevice->SetFVF(D3DFVF_COLOR_VERTEX);
+	gPD3DDevice->SetIndices(gPIndexBuffer);
+	gPD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 144, 0, 256);
+	//gPD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 3, 0, 1);
 	gPD3DDevice->EndScene();
 	gPD3DDevice->Present(nullptr, nullptr, nullptr, nullptr);
 
