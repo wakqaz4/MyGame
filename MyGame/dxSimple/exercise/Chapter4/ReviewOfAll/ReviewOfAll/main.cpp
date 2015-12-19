@@ -55,6 +55,10 @@ char gKeyboardBuffer[256]{0};
 float gFormatRectChange = 0.0f;
 LPDIRECT3DVERTEXBUFFER9 gPVertexBuffer = nullptr;
 LPDIRECT3DINDEXBUFFER9 gPIndexBuffer = nullptr;
+LPD3DXMESH gPTeapotMesh = nullptr;
+LPDIRECT3DTEXTURE9 gPTexture = nullptr;
+LPDIRECT3DVERTEXBUFFER9 gPCubeVertexBuffer = nullptr;
+LPDIRECT3DINDEXBUFFER9 gPCubeIndexBuffer = nullptr;
 
 struct ScolorVertex
 {
@@ -64,8 +68,17 @@ struct ScolorVertex
 //	float rhw;
 	DWORD color;
 };
+struct SUVVertex
+{
+	float x;
+	float y;
+	float z;
+	float u;
+	float v;
+};
 
 #define D3DFVF_COLOR_VERTEX (D3DFVF_XYZ | D3DFVF_DIFFUSE)
+#define D3DFVF_UV_VERTEX (D3DFVF_XYZ | D3DFVF_TEX1)
 //////////////////////////////////////////////////////////////////////////
 // The function entities.  
 //////////////////////////////////////////////////////////////////////////
@@ -222,59 +235,136 @@ bool ObjectInit()
 	D3DXCreateFont(gPD3DDevice, 38, 0, 0, 0, 0, 0, 0, 0, 0, _T("楷体"), &gPFont);
 	//draw a sphere, 16 triangles per circle.So there should be 16*(16/2+1) = 144 vertices
 	//and there should be 16*16 triangles, so 16*16*3 indices.
-	ScolorVertex vertices[144];
-	float sphereRadius = 50.0f;
-	for (int i = 0; i < 16; i++)
-	{
-		for (int j = 0; j < 9; j++)
-		{
-			vertices[i * 9 + j].x = sphereRadius*sin(D3DX_PI / 8 * j)*cos(D3DX_PI / 8 * i);
-			vertices[i * 9 + j].y = sphereRadius*(-cos(D3DX_PI/8*j));
-			vertices[i * 9 + j].z = sphereRadius*sin(D3DX_PI / 8 * j)*sin(D3DX_PI / 8 * i);
-//			vertices[i * 9 + j].rhw = 1.0f;
-			vertices[i * 9 + j].color = D3DCOLOR_XRGB(11, 222, 1);
-		}
-	}
+	//ScolorVertex vertices[144];
+	//float sphereRadius = 50.0f;
+	//for (int i = 0; i < 16; i++)
+	//{
+	//	for (int j = 0; j < 9; j++)
+	//	{
+	//		vertices[i * 9 + j].x = sphereRadius*sin(D3DX_PI / 8 * j)*cos(D3DX_PI / 8 * i);
+	//		vertices[i * 9 + j].y = sphereRadius*(-cos(D3DX_PI/8*j));
+	//		vertices[i * 9 + j].z = sphereRadius*sin(D3DX_PI / 8 * j)*sin(D3DX_PI / 8 * i);
+	//		vertices[i * 9 + j].color = D3DCOLOR_XRGB(11, 222, 1);
+	//	}
+	//}
 
-	gPD3DDevice->CreateVertexBuffer(sizeof(vertices), 0, D3DFVF_COLOR_VERTEX, D3DPOOL_DEFAULT, &gPVertexBuffer, nullptr);
-	void* pVertex;
-	gPVertexBuffer->Lock(0, sizeof(vertices), (void**)&pVertex, 0);
-	memcpy(pVertex, vertices, sizeof(vertices));
-	gPVertexBuffer->Unlock();	
+	//gPD3DDevice->CreateVertexBuffer(sizeof(vertices), 0, D3DFVF_COLOR_VERTEX, D3DPOOL_DEFAULT, &gPVertexBuffer, nullptr);
+	//void* pVertex;
+	//gPVertexBuffer->Lock(0, sizeof(vertices), (void**)&pVertex, 0);
+	//memcpy(pVertex, vertices, sizeof(vertices));
+	//gPVertexBuffer->Unlock();	
 
-	int indices[768];
-	for (int i = 0; i < 16; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			if (i == 15)
-			{
-				indices[(i * 8 + j) * 6 + 0] = i * 9 + j;
-				indices[(i * 8 + j) * 6 + 1] = j;
-				indices[(i * 8 + j) * 6 + 2] = j + 1;
-				indices[(i * 8 + j) * 6 + 3] = i * 9 + j;
-				indices[(i * 8 + j) * 6 + 4] = i * 9 + j +1;
-				indices[(i * 8 + j) * 6 + 5] = j + 1;
-			}
-			else
-			{
-				indices[(i * 8 + j) * 6 + 0] = i * 9 + j;
-				indices[(i * 8 + j) * 6 + 1] = (i + 1) * 9 + j;
-				indices[(i * 8 + j) * 6 + 2] = (i + 1) * 9 + j + 1;
-				indices[(i * 8 + j) * 6 + 3] = i * 9 + j;
-				indices[(i * 8 + j) * 6 + 4] = i * 9 + j + 1;
-				indices[(i * 8 + j) * 6 + 5] = (i + 1) * 9 + j + 1;
-			}			
-		}
-	}
+	//int indices[768];
+	//for (int i = 0; i < 16; i++)
+	//{
+	//	for (int j = 0; j < 8; j++)
+	//	{
+	//		if (i == 15)
+	//		{
+	//			indices[(i * 8 + j) * 6 + 0] = i * 9 + j;
+	//			indices[(i * 8 + j) * 6 + 1] = j;
+	//			indices[(i * 8 + j) * 6 + 2] = j + 1;
+	//			indices[(i * 8 + j) * 6 + 3] = i * 9 + j;
+	//			indices[(i * 8 + j) * 6 + 4] = i * 9 + j +1;
+	//			indices[(i * 8 + j) * 6 + 5] = j + 1;
+	//		}
+	//		else
+	//		{
+	//			indices[(i * 8 + j) * 6 + 0] = i * 9 + j;
+	//			indices[(i * 8 + j) * 6 + 1] = (i + 1) * 9 + j;
+	//			indices[(i * 8 + j) * 6 + 2] = (i + 1) * 9 + j + 1;
+	//			indices[(i * 8 + j) * 6 + 3] = i * 9 + j;
+	//			indices[(i * 8 + j) * 6 + 4] = i * 9 + j + 1;
+	//			indices[(i * 8 + j) * 6 + 5] = (i + 1) * 9 + j + 1;
+	//		}			
+	//	}
+	//}
 
-	gPD3DDevice->CreateIndexBuffer(sizeof(indices), 0, D3DFMT_INDEX32, D3DPOOL_DEFAULT, &gPIndexBuffer, nullptr);
+	//gPD3DDevice->CreateIndexBuffer(sizeof(indices), 0, D3DFMT_INDEX32, D3DPOOL_DEFAULT, &gPIndexBuffer, nullptr);
 	void* pIndex;
-	gPIndexBuffer->Lock(0, 0, (void**)&pIndex, 0);
-	memcpy(pIndex, indices, sizeof(indices));
-	gPIndexBuffer->Unlock();
+	//gPIndexBuffer->Lock(0, 0, (void**)&pIndex, 0);
+	//memcpy(pIndex, indices, sizeof(indices));
+	//gPIndexBuffer->Unlock();
 
-	gPD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
+	//D3DXCreateTeapot(gPD3DDevice, &gPTeapotMesh, nullptr);
+
+	SUVVertex cubeVertices[8]
+	{
+		{ -20.0f, 20.0f, -20.0f, 0.0f, 0.0f },
+		{ 20.0f, 20.0f, -20.0f, 0.0f, 1.0f },
+		{ 20.0f, 20.0f, 20.0f, 1.0f, 1.0f },
+		{ -20.0f, 20.0f, 20.0f, 1.0f, 0.0f },
+		{ -20.0f, -20.0f, -20.0f, 0.0f, 0.0f },
+		{ 20.0f, -20.0f, -20.0f, 0.0f, 3.0f },
+		{ 20.0f, -20.0f, 20.0f, 3.0f, 3.0f },
+		{ -20.0f, -20.0f, 20.0f, 3.0f, 0.0f }
+	};
+	gPD3DDevice->CreateVertexBuffer(sizeof(cubeVertices), 0, D3DFVF_UV_VERTEX, D3DPOOL_DEFAULT, &gPCubeVertexBuffer, nullptr);
+	gPCubeVertexBuffer->Lock(0, sizeof(cubeVertices), (void**)&pIndex, 0);
+	memcpy(pIndex, cubeVertices, sizeof(cubeVertices));
+	gPCubeVertexBuffer->Unlock();
+
+	int cubeIndices[36];
+	{
+		cubeIndices[0] = 0;
+		cubeIndices[1] = 1;
+		cubeIndices[2] = 2;
+		cubeIndices[3] = 0;
+		cubeIndices[4] = 2;
+		cubeIndices[5] = 3;
+		cubeIndices[6] = 4;
+		cubeIndices[7] = 5;
+		cubeIndices[8] = 6;
+		cubeIndices[9] = 4; 
+		cubeIndices[10] = 6;
+		cubeIndices[11] = 7;
+
+		cubeIndices[12] = 0;
+		cubeIndices[13] = 1;
+		cubeIndices[14] = 5;
+		cubeIndices[15] = 0;
+		cubeIndices[16] = 4;
+		cubeIndices[17] = 5;
+
+		cubeIndices[18] = 1;
+		cubeIndices[19] = 2;
+		cubeIndices[20] = 6;
+		cubeIndices[21] = 1;
+		cubeIndices[22] = 5;
+		cubeIndices[23] = 6;
+
+		cubeIndices[24] = 2;
+		cubeIndices[25] = 6;
+		cubeIndices[26] = 7;
+		cubeIndices[27] = 2;
+		cubeIndices[28] = 3;
+		cubeIndices[29] = 7;
+
+		cubeIndices[30] = 0;
+		cubeIndices[31] = 3;
+		cubeIndices[32] = 7;
+		cubeIndices[33] = 0;
+		cubeIndices[34] = 4;
+		cubeIndices[35] = 7;
+	}
+	gPD3DDevice->CreateIndexBuffer(sizeof(cubeIndices), 0, D3DFMT_INDEX32,
+		D3DPOOL_DEFAULT, &gPCubeIndexBuffer, nullptr);
+	gPCubeIndexBuffer->Lock(0, sizeof(cubeIndices), (void**)pIndex, 0);
+	memcpy(pIndex, cubeIndices, sizeof(cubeIndices));
+	gPCubeIndexBuffer->Unlock();
+
+	D3DXCreateTextureFromFileEx(gPD3DDevice, L"pal5q.jpg", 0, 0, 6, 0, D3DFMT_X8R8G8B8,
+		D3DPOOL_MANAGED, D3DX_DEFAULT, D3DX_DEFAULT, 0xFF000000, 0, 0, &gPTexture);
+
+	D3DMATERIAL9 mtrl;
+	::ZeroMemory(&mtrl, sizeof(mtrl));
+	mtrl.Ambient = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	mtrl.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	mtrl.Specular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	gPD3DDevice->SetMaterial(&mtrl);
+
+	gPD3DDevice->SetRenderState(D3DRS_AMBIENT, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)); //设置环境光
+
 	gPD3DDevice->SetRenderState(D3DRS_CULLMODE, false);   //关掉背面消隐，无论是否顺时针，随机的那个三角形都会显示。 
 	//gPD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);   //开启背面消隐
 	//gPD3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESS);   //将深度测试函数设为D3DCMP_LESS
@@ -285,7 +375,7 @@ bool ObjectInit()
 void MatrixSet()
 {
 	D3DXMATRIX matView;
-	D3DXVECTOR3 vEye(0.0f, 0.0f, -300.0f);
+	D3DXVECTOR3 vEye(0.0f, 0.0f, -600.0f);
 	D3DXVECTOR3 vAt(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 vUp(0.0f, 1.0f, 0.0f);
 	D3DXMatrixLookAtLH(&matView, &vEye, &vAt, &vUp);
@@ -345,7 +435,7 @@ void Direct3DRender(HWND hwnd)
 	RECT formatRect;
 	GetClientRect(hwnd, &formatRect);
 
-	gPD3DDevice->Clear(0, nullptr, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 0);
+	gPD3DDevice->Clear(0, nullptr, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
 	gPD3DDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
 	gPD3DDevice->BeginScene();
 	MatrixSet();
@@ -379,14 +469,33 @@ void Direct3DRender(HWND hwnd)
 	formatRect.top -= gFormatRectChange;
 	gPFont->DrawTextW(nullptr, _T("Tayler is swift"), -1, &formatRect, DT_TOP | DT_LEFT, D3DCOLOR_XRGB(11,222, 1));
 
-	gPD3DDevice->SetStreamSource(0, gPVertexBuffer, 0, sizeof(ScolorVertex));
-	gPD3DDevice->SetFVF(D3DFVF_COLOR_VERTEX);
-	gPD3DDevice->SetIndices(gPIndexBuffer);
-	gPD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 144, 0, 256);
-	//gPD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 3, 0, 1);
+	//gPD3DDevice->SetStreamSource(0, gPVertexBuffer, 0, sizeof(ScolorVertex));
+	//gPD3DDevice->SetFVF(D3DFVF_COLOR_VERTEX);
+	//gPD3DDevice->SetIndices(gPIndexBuffer);
+	//gPD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 144, 0, 256);
+	//
+
+	//D3DXMATRIX matTeapotTrans;
+	//D3DXMATRIX matTeapotScale;
+	//D3DXMatrixTranslation(&matTeapotTrans,50.0f, 50.05f, 0.0f);
+	//D3DXMatrixScaling(&matTeapotScale, 5.0f, 5.0f, 5.0f);
+	//matTeapotScale = matTeapotScale*matTeapotTrans;
+	//gPD3DDevice->SetTransform(D3DTS_WORLD, &matTeapotScale);
+	//gPTeapotMesh->DrawSubset(0);
+
+	D3DXMATRIX matCubeTrans;
+	D3DXMatrixTranslation(&matCubeTrans, -20.0f, -20.05f, 0.0f);
+	gPD3DDevice->SetTransform(D3DTS_WORLD, &matCubeTrans);
+
+	gPD3DDevice->SetTexture(0, gPTexture);
+	gPD3DDevice->SetStreamSource(0, gPCubeVertexBuffer, 0, sizeof(SUVVertex));
+	gPD3DDevice->SetFVF(D3DFVF_UV_VERTEX);
+	gPD3DDevice->SetIndices(gPCubeIndexBuffer);
+	gPD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 8, 0, 12);
+
 	gPD3DDevice->EndScene();
 	gPD3DDevice->Present(nullptr, nullptr, nullptr, nullptr);
-
+	
 }
 bool Direct3DCleanup(HWND hwnd)
 {
