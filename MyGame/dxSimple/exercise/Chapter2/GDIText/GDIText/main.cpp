@@ -1,5 +1,6 @@
 /************************************************************************
-* Include header files                                                                  
+* A program using HDC, TextOut, SetTextColor to print messages with color
+* on the screen.
 ************************************************************************/
 #include <windows.h>
 #include <tchar.h>

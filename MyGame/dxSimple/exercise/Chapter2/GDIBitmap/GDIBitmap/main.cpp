@@ -1,12 +1,8 @@
 /************************************************************************
 * This program intends to use Bitmap and Pen and Brush to create a naturo
-* image with two brushes on left&right side, and one narrow line on top, 
-* and one fat line on the bottom.
-************************************************************************/
-
-/************************************************************************
-* Include Files                                                                  
-************************************************************************/
+* image with two brushes on left&right side, and one narrow line on the top, 
+* with another fat line at the bottom.
+**********************************************************************/
 #include <windows.h>
 #include <tchar.h>
 
@@ -24,7 +20,7 @@ extern void GamePaint(HWND);
 extern bool GameCleanup(HWND);
 
 /************************************************************************
-* Global functions                                                                  
+* Global vars                                                                 
 ************************************************************************/
 
 HDC gHDC;

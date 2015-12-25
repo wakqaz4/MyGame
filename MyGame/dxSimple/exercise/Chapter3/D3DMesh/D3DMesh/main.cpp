@@ -1,6 +1,6 @@
 /************************************************************************
 * this project is used to draw four meshes                                                                   
-* Critical Function: LPD3DXMESH
+* Critical Struct: LPD3DXMESH
 ************************************************************************/
 #include <windows.h>
 #include <tchar.h>
@@ -212,7 +212,7 @@ void MatrixSet()
 	gPD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 
 	D3DXMATRIX matView;
-	D3DXVECTOR3 vEye(0.0f, 0.0f, -200.0f);
+	D3DXVECTOR3 vEye(0.0f, 0.0f, -50.0f);
 	D3DXVECTOR3 vAt(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 vUp(0.0f, 1.0f, 0.0f);
 	D3DXMatrixLookAtLH(&matView, &vEye, &vAt, &vUp);

@@ -1,7 +1,6 @@
 /************************************************************************
-* This is a program used to make all four transformations of Direct3D                                                                  
+* This program implements all four transform matrixes of Direct3D.                                                                  
 ************************************************************************/
-
 #include <windows.h>
 #include <tchar.h>
 #include <time.h>
@@ -12,6 +11,12 @@
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
 
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
+#define WINDOW_CLASS_NAME _T("ClassName")
+#define SAFE_RELEASE(p) {if (p){p->Release(); p = nullptr;}}
+
+#define D3DFVF_CUSTOM_VERTEX (D3DFVF_XYZ | D3DFVF_DIFFUSE)
 //////////////////////////////////////////////////////////////////////////
 // Declare external functions and global variables, which includes:
 // WndProc, Direct3D init, render, clearup, ObjectInit, &
@@ -36,13 +41,6 @@ struct CUSTOM_VERTEX
 	float z;
 	DWORD color;
 };
-
-#define D3DFVF_CUSTOM_VERTEX (D3DFVF_XYZ | D3DFVF_DIFFUSE)
-
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
-#define WINDOW_CLASS_NAME _T("ClassName")
-#define SAFE_RELEASE(p) {if (p){p->Release(); p = nullptr;}}
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
@@ -163,8 +161,8 @@ bool Direct3DInit(HWND hwnd)
 	{
 		return false;
 	}
-	gPD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);      //关闭光照
-	gPD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);   //开启背面消隐
+	gPD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);      
+	gPD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);   
 
 	return true;
 }
@@ -172,8 +170,8 @@ bool Direct3DInit(HWND hwnd)
 void matrixSet()
 {
 	//////////////////////////////////////////////////////////////////////////
-	// We need to make 4 transforma matrics  here, which are world, view(camera),
-	// projection, and setting parameters;
+	// We need to make 4 transform matrixes here, which are world, view(camera),
+	// projection, and setting parameters(viewport);
 	//////////////////////////////////////////////////////////////////////////
 	
 	D3DXMATRIX matWorldTrans;

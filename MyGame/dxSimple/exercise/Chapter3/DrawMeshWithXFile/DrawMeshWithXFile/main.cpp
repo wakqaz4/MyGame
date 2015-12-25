@@ -1,5 +1,5 @@
 /************************************************************************
-* This project draws a Lolita with prepared .X file.
+* This project draws a Lolita with prepared .X file, and also DInput.
 * .X file is a format supported by DX, which includes much information 
 * such as mesh, texture, material, animation, and so on;
 ************************************************************************/

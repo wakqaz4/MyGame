@@ -1,6 +1,6 @@
 /************************************************************************
 * This project also draws a mesh with .X file, and it also used DirectInput
-* to deal with mouse&keyboard inputs. However, this project used a class
+* to deal with mouse&keyboard inputs. However, this project uses a class
 * CDirectInput instead of all the smothering pMouse, pKeyboard...
 ************************************************************************/
 #include <windows.h>
@@ -166,13 +166,12 @@ bool Direct3DInit(HWND hwnd, HINSTANCE hInstance)
 		return false;
 	}
 
+	SAFE_RELEASE(pD3D9);
 
 	//////////////////////////////////////////////////////////////////////////
 	// Init objects, which includes music, font, mesh, material, texture,
 	// and other
-	//////////////////////////////////////////////////////////////////////////	
-	
-	SAFE_RELEASE(pD3D9);
+	//////////////////////////////////////////////////////////////////////////		
 	if (!ObjectInit(hwnd, hInstance))
 	{
 		return false;
@@ -206,8 +205,8 @@ bool ObjectInit(HWND hwnd, HINSTANCE hInstance)
 	}
 	SAFE_RELEASE(pAdjBuffer);
 	SAFE_RELEASE(pMaterialBuffer);
-	gPD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);   //开启背面消隐
-	gPD3DDevice->SetRenderState(D3DRS_AMBIENT, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)); //设置环境光
+	gPD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);  
+	gPD3DDevice->SetRenderState(D3DRS_AMBIENT, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)); 
 
 	return true;
 }

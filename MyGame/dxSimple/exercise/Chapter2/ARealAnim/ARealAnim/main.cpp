@@ -1,6 +1,6 @@
 /************************************************************************
-* This project implements a real animation which is updated in the main 
-* game loop
+* This project implements a real animation using a series of images 
+* which is updated in the main game loop. 
 ************************************************************************/
 #include <windows.h>
 #include <tchar.h>

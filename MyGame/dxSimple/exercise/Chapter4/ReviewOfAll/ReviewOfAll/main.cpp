@@ -96,6 +96,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	wndClass.lpszMenuName = nullptr;
 	wndClass.style = CS_HREDRAW | CS_VREDRAW;
 
+	char* temp = GetCommandLineA();
+
 	if (!RegisterClass(&wndClass))
 	{
 		return -1;
@@ -235,58 +237,58 @@ bool ObjectInit()
 	D3DXCreateFont(gPD3DDevice, 38, 0, 0, 0, 0, 0, 0, 0, 0, _T("楷体"), &gPFont);
 	//draw a sphere, 16 triangles per circle.So there should be 16*(16/2+1) = 144 vertices
 	//and there should be 16*16 triangles, so 16*16*3 indices.
-	//ScolorVertex vertices[144];
-	//float sphereRadius = 50.0f;
-	//for (int i = 0; i < 16; i++)
-	//{
-	//	for (int j = 0; j < 9; j++)
-	//	{
-	//		vertices[i * 9 + j].x = sphereRadius*sin(D3DX_PI / 8 * j)*cos(D3DX_PI / 8 * i);
-	//		vertices[i * 9 + j].y = sphereRadius*(-cos(D3DX_PI/8*j));
-	//		vertices[i * 9 + j].z = sphereRadius*sin(D3DX_PI / 8 * j)*sin(D3DX_PI / 8 * i);
-	//		vertices[i * 9 + j].color = D3DCOLOR_XRGB(11, 222, 1);
-	//	}
-	//}
+	ScolorVertex vertices[144];
+	float sphereRadius = 50.0f;
+	for (int i = 0; i < 16; i++)
+	{
+		for (int j = 0; j < 9; j++)
+		{
+			vertices[i * 9 + j].x = sphereRadius*sin(D3DX_PI / 8 * j)*cos(D3DX_PI / 8 * i);
+			vertices[i * 9 + j].y = sphereRadius*(-cos(D3DX_PI/8*j));
+			vertices[i * 9 + j].z = sphereRadius*sin(D3DX_PI / 8 * j)*sin(D3DX_PI / 8 * i);
+			vertices[i * 9 + j].color = D3DCOLOR_XRGB(11, 222, 1);
+		}
+	}
 
-	//gPD3DDevice->CreateVertexBuffer(sizeof(vertices), 0, D3DFVF_COLOR_VERTEX, D3DPOOL_DEFAULT, &gPVertexBuffer, nullptr);
-	//void* pVertex;
-	//gPVertexBuffer->Lock(0, sizeof(vertices), (void**)&pVertex, 0);
-	//memcpy(pVertex, vertices, sizeof(vertices));
-	//gPVertexBuffer->Unlock();	
+	gPD3DDevice->CreateVertexBuffer(sizeof(vertices), 0, D3DFVF_COLOR_VERTEX, D3DPOOL_DEFAULT, &gPVertexBuffer, nullptr);
+	void* pVertex;
+	gPVertexBuffer->Lock(0, sizeof(vertices), (void**)&pVertex, 0);
+	memcpy(pVertex, vertices, sizeof(vertices));
+	gPVertexBuffer->Unlock();	
 
-	//int indices[768];
-	//for (int i = 0; i < 16; i++)
-	//{
-	//	for (int j = 0; j < 8; j++)
-	//	{
-	//		if (i == 15)
-	//		{
-	//			indices[(i * 8 + j) * 6 + 0] = i * 9 + j;
-	//			indices[(i * 8 + j) * 6 + 1] = j;
-	//			indices[(i * 8 + j) * 6 + 2] = j + 1;
-	//			indices[(i * 8 + j) * 6 + 3] = i * 9 + j;
-	//			indices[(i * 8 + j) * 6 + 4] = i * 9 + j +1;
-	//			indices[(i * 8 + j) * 6 + 5] = j + 1;
-	//		}
-	//		else
-	//		{
-	//			indices[(i * 8 + j) * 6 + 0] = i * 9 + j;
-	//			indices[(i * 8 + j) * 6 + 1] = (i + 1) * 9 + j;
-	//			indices[(i * 8 + j) * 6 + 2] = (i + 1) * 9 + j + 1;
-	//			indices[(i * 8 + j) * 6 + 3] = i * 9 + j;
-	//			indices[(i * 8 + j) * 6 + 4] = i * 9 + j + 1;
-	//			indices[(i * 8 + j) * 6 + 5] = (i + 1) * 9 + j + 1;
-	//		}			
-	//	}
-	//}
+	int indices[768];
+	for (int i = 0; i < 16; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			if (i == 15)
+			{
+				indices[(i * 8 + j) * 6 + 0] = i * 9 + j;
+				indices[(i * 8 + j) * 6 + 1] = j;
+				indices[(i * 8 + j) * 6 + 2] = j + 1;
+				indices[(i * 8 + j) * 6 + 3] = i * 9 + j;
+				indices[(i * 8 + j) * 6 + 4] = i * 9 + j +1;
+				indices[(i * 8 + j) * 6 + 5] = j + 1;
+			}
+			else
+			{
+				indices[(i * 8 + j) * 6 + 0] = i * 9 + j;
+				indices[(i * 8 + j) * 6 + 1] = (i + 1) * 9 + j;
+				indices[(i * 8 + j) * 6 + 2] = (i + 1) * 9 + j + 1;
+				indices[(i * 8 + j) * 6 + 3] = i * 9 + j;
+				indices[(i * 8 + j) * 6 + 4] = i * 9 + j + 1;
+				indices[(i * 8 + j) * 6 + 5] = (i + 1) * 9 + j + 1;
+			}			
+		}
+	}
 
-	//gPD3DDevice->CreateIndexBuffer(sizeof(indices), 0, D3DFMT_INDEX32, D3DPOOL_DEFAULT, &gPIndexBuffer, nullptr);
+	gPD3DDevice->CreateIndexBuffer(sizeof(indices), 0, D3DFMT_INDEX32, D3DPOOL_DEFAULT, &gPIndexBuffer, nullptr);
 	void* pIndex;
-	//gPIndexBuffer->Lock(0, 0, (void**)&pIndex, 0);
-	//memcpy(pIndex, indices, sizeof(indices));
-	//gPIndexBuffer->Unlock();
+	gPIndexBuffer->Lock(0, 0, (void**)&pIndex, 0);
+	memcpy(pIndex, indices, sizeof(indices));
+	gPIndexBuffer->Unlock();
 
-	//D3DXCreateTeapot(gPD3DDevice, &gPTeapotMesh, nullptr);
+	D3DXCreateTeapot(gPD3DDevice, &gPTeapotMesh, nullptr);
 
 	SUVVertex cubeVertices[8]
 	{
@@ -349,7 +351,7 @@ bool ObjectInit()
 	}
 	gPD3DDevice->CreateIndexBuffer(sizeof(cubeIndices), 0, D3DFMT_INDEX32,
 		D3DPOOL_DEFAULT, &gPCubeIndexBuffer, nullptr);
-	gPCubeIndexBuffer->Lock(0, sizeof(cubeIndices), (void**)pIndex, 0);
+	gPCubeIndexBuffer->Lock(0, 0, (void**)pIndex, 0);
 	memcpy(pIndex, cubeIndices, sizeof(cubeIndices));
 	gPCubeIndexBuffer->Unlock();
 
@@ -357,16 +359,25 @@ bool ObjectInit()
 		D3DPOOL_MANAGED, D3DX_DEFAULT, D3DX_DEFAULT, 0xFF000000, 0, 0, &gPTexture);
 
 	D3DMATERIAL9 mtrl;
-	::ZeroMemory(&mtrl, sizeof(mtrl));
-	mtrl.Ambient = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	mtrl.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	mtrl.Specular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	ZeroMemory(&mtrl, sizeof(mtrl));
+	mtrl.Ambient = D3DXCOLOR(0.3f, 1.0f, 0.12f, 1.0f);
+	mtrl.Diffuse = D3DXCOLOR(0.5f, 0.06f, 0.7f, 1.0f);
+	mtrl.Specular = D3DXCOLOR(0.5f, 0.5f, 0.1f, 1.0f);
+	mtrl.Emissive = D3DXCOLOR(0.5f, 0.5f, 0.1f, 1.0f);
 	gPD3DDevice->SetMaterial(&mtrl);
 
-	gPD3DDevice->SetRenderState(D3DRS_AMBIENT, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)); //设置环境光
+	D3DLIGHT9 light;
+	ZeroMemory(&light, sizeof(light));
+	light.Type = D3DLIGHT_DIRECTIONAL;
+	light.Ambient = D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f);
+	light.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	light.Specular = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);
+	light.Direction = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
+	gPD3DDevice->SetLight(0, &light);
+	gPD3DDevice->LightEnable(0, true);
+//	gPD3DDevice->SetRenderState(D3DRS_AMBIENT, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)); //设置环境光
 
-	gPD3DDevice->SetRenderState(D3DRS_CULLMODE, false);   //关掉背面消隐，无论是否顺时针，随机的那个三角形都会显示。 
-	//gPD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);   //开启背面消隐
+	gPD3DDevice->SetRenderState(D3DRS_CULLMODE, false);   
 	//gPD3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESS);   //将深度测试函数设为D3DCMP_LESS
 	//gPD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, true);     //深度测试成功后，更新深度缓存
 
@@ -468,30 +479,66 @@ void Direct3DRender(HWND hwnd)
 
 	formatRect.top -= gFormatRectChange;
 	gPFont->DrawTextW(nullptr, _T("Tayler is swift"), -1, &formatRect, DT_TOP | DT_LEFT, D3DCOLOR_XRGB(11,222, 1));
+	D3DMATERIAL9 mtrl;
+	::ZeroMemory(&mtrl, sizeof(mtrl));
+	mtrl.Ambient = D3DXCOLOR(0.3f, 1.0f, 0.12f, 1.0f);
+	mtrl.Diffuse = D3DXCOLOR(0.5f, 0.06f, 0.7f, 1.0f);
+	mtrl.Specular = D3DXCOLOR(0.5f, 0.5f, 0.1f, 1.0f);
+	mtrl.Emissive = D3DXCOLOR(0.5f, 0.5f, 0.1f, 1.0f);
+	gPD3DDevice->SetMaterial(&mtrl);
+	gPD3DDevice->SetStreamSource(0, gPVertexBuffer, 0, sizeof(ScolorVertex));
+	gPD3DDevice->SetFVF(D3DFVF_COLOR_VERTEX);
+	gPD3DDevice->SetIndices(gPIndexBuffer);
+	gPD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 144, 0, 256);
+	
 
-	//gPD3DDevice->SetStreamSource(0, gPVertexBuffer, 0, sizeof(ScolorVertex));
-	//gPD3DDevice->SetFVF(D3DFVF_COLOR_VERTEX);
-	//gPD3DDevice->SetIndices(gPIndexBuffer);
-	//gPD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 144, 0, 256);
-	//
+	D3DXMATRIX matTeapotTrans;
+	D3DXMATRIX matTeapotScale;
+	D3DXMatrixTranslation(&matTeapotTrans,50.0f, 50.05f, 0.0f);
+	D3DXMatrixScaling(&matTeapotScale, 5.0f, 5.0f, 5.0f);
+	matTeapotScale = matTeapotScale*matTeapotTrans;
+	gPD3DDevice->SetTransform(D3DTS_WORLD, &matTeapotScale);
 
-	//D3DXMATRIX matTeapotTrans;
-	//D3DXMATRIX matTeapotScale;
-	//D3DXMatrixTranslation(&matTeapotTrans,50.0f, 50.05f, 0.0f);
-	//D3DXMatrixScaling(&matTeapotScale, 5.0f, 5.0f, 5.0f);
-	//matTeapotScale = matTeapotScale*matTeapotTrans;
-	//gPD3DDevice->SetTransform(D3DTS_WORLD, &matTeapotScale);
-	//gPTeapotMesh->DrawSubset(0);
+	ZeroMemory(&mtrl, sizeof(mtrl));
+	mtrl.Ambient = D3DXCOLOR(0.5f, 0.5f, 0.7f, 1.0f);
+	mtrl.Diffuse = D3DXCOLOR(0.4f, 0.6f, 0.6f, 1.0f);
+	mtrl.Specular = D3DXCOLOR(0.3f, 0.3f, 0.3f, 0.3f);
+	mtrl.Emissive = D3DXCOLOR(0.3f, 0.0f, 0.1f, 1.0f);
+	gPD3DDevice->SetMaterial(&mtrl);
+	gPTeapotMesh->DrawSubset(0);
 
 	D3DXMATRIX matCubeTrans;
 	D3DXMatrixTranslation(&matCubeTrans, -20.0f, -20.05f, 0.0f);
-	gPD3DDevice->SetTransform(D3DTS_WORLD, &matCubeTrans);
+	ZeroMemory(&mtrl, sizeof(mtrl));
+	mtrl.Ambient = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	mtrl.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	mtrl.Specular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	gPD3DDevice->SetMaterial(&mtrl);
 
+	gPD3DDevice->SetTransform(D3DTS_WORLD, &matCubeTrans);
 	gPD3DDevice->SetTexture(0, gPTexture);
 	gPD3DDevice->SetStreamSource(0, gPCubeVertexBuffer, 0, sizeof(SUVVertex));
 	gPD3DDevice->SetFVF(D3DFVF_UV_VERTEX);
 	gPD3DDevice->SetIndices(gPCubeIndexBuffer);
 	gPD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 8, 0, 12);
+	gPD3DDevice->SetRenderState(D3DRS_NORMALIZENORMALS, true);   //初始化顶点法线
+
+	D3DLIGHT9 light;
+	ZeroMemory(&light, sizeof(light));
+	light.Type = D3DLIGHT_POINT;
+	light.Ambient = D3DXCOLOR(0.6f, 0.6f, 0.6f, 1.0f);
+	light.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	light.Specular = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);
+	light.Position = D3DXVECTOR3(0.0f, 200.0f, 0.0f);
+	light.Attenuation0 = 1.0f;
+	light.Attenuation1 = 0.0f;
+	light.Attenuation2 = 0.0f;
+	light.Range = 300.0f;
+	gPD3DDevice->SetLight(0, &light);
+	gPD3DDevice->LightEnable(0, true);
+	gPD3DDevice->SetRenderState(D3DRS_NORMALIZENORMALS, true);   //初始化顶点法线
+	gPD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);   //开启背面消隐
+	gPD3DDevice->SetRenderState(D3DRS_AMBIENT, D3DCOLOR_XRGB(36, 36, 36));   //设置一下环境光 
 
 	gPD3DDevice->EndScene();
 	gPD3DDevice->Present(nullptr, nullptr, nullptr, nullptr);

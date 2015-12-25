@@ -122,8 +122,8 @@ void GamePaint(HWND hwnd)
 	BitBlt(gHDC, 400, 100, 400, 600, gBufferDC, 400, 0, SRCAND);
 	BitBlt(gHDC, 400, 100, 400, 600, gBufferDC, 0, 0, SRCPAINT);
 
-	WCHAR NPCName[] = _T("阿尔托利亚:");
-	WCHAR artContext[] = _T("这是个开始。");
+	WCHAR NPCName[] = _T("吾王尼禄:");
+	WCHAR artContext[] = _T("Hey you!");
 
 	HBITMAP bmp = CreateCompatibleBitmap(gBufferDC, 800, 600);	
 	SelectObject(gBufferDC, bmp);
@@ -133,10 +133,10 @@ void GamePaint(HWND hwnd)
 	SetTextColor(gBufferDC, RGB(0, 0, 255));
 	TextOut(gBufferDC, 10, 400, NPCName, wcslen(NPCName));
 
-	HFONT font2 = CreateFont(20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, _T("宋体"));
+	HFONT font2 = CreateFont(20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, _T("TimesNewRoman"));
 	SelectObject(gBufferDC, font2);
 	SetTextColor(gBufferDC, RGB(255, 0, 0));
-	TextOut(gBufferDC, 120, 400, artContext, wcslen(artContext));
+	TextOut(gBufferDC, 100, 400, artContext, wcslen(artContext));
 
 	BitBlt(gHDC, 0, 0, 800, 600, gBufferDC, 0, 0, SRCPAINT);
 	//SetBkColor(gBufferDC, RGB(255, 255, 255));

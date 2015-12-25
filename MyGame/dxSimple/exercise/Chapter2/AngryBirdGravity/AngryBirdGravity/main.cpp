@@ -147,10 +147,7 @@ void GameUpdate(HWND hwnd, DWORD tickMilliSecond)
 
 	SelectObject(gBufDC, gBmpBackground);
 	BitBlt(gMemDC, 0, 0, 800, 600, gBufDC, 0, 0, SRCCOPY);
-	/**
-	*	The upper function occlusions all black color in the original image, so
-	*	we could use 0-1 bitmap to make a better occlusion like the following:
-	*	*/
+
 	SelectObject(gBufDC, gBmpSprite);
 	BitBlt(gMemDC, gPosX, gPosY, 60, 60,
 		gBufDC, 60, 0, SRCAND);

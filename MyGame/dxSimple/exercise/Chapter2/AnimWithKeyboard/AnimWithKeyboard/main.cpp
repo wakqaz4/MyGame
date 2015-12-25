@@ -1,18 +1,18 @@
 /************************************************************************
-* Animation triggered by key WASD                                                                  
+* Animation implemented with a series of images while triggered by 
+* key WASD.                                                                 
 ************************************************************************/
 #include <windows.h>
 #include <tchar.h>
 #include <time.h>
-
 #include "sprite.h"
 
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "Msimg32.lib")
 
-/************************************************************************
-* External functions and global variables                                                                  
-************************************************************************/
+//////////////////////////////////////////////////////////////////////////
+// External functions and global variables                                                                    
+//////////////////////////////////////////////////////////////////////////
 extern LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 extern bool GameInit(HWND hwnd);
 extern void GameUpdate(HWND hwnd);
@@ -187,18 +187,21 @@ void GameUpdate(HWND hwnd)
 		break;
 	default:
 		break;
-	}	
+	}
+
 	TransparentBlt(gMemDC, gCharacter.mPosX, gCharacter.mPosY, gCharacter.mWidth, gCharacter.mHeight,
 		gBufDC, gSpriteIndex*gCharacter.mWidth, 0, gCharacter.mWidth, gCharacter.mHeight,
 		RGB(0, 0, 0));
+	
 	/**
-	 *	The upper function occlusions all black color in the original image, so 
-	 *	we could use 0-1 bitmap to make a better occlusion like the following:
+	 *	The upper function occludes all black pixels in the original image,
+	 *	however, the black pixels of the character will be culled...
+	 *	So here we could use 0-1 bitmap to make a better occlusion like this:
 	 *	*/
-	BitBlt(gMemDC, gCharacter.mPosX, gCharacter.mPosY, gCharacter.mWidth, gCharacter.mHeight,
-		gBufDC, gSpriteIndex*gCharacter.mWidth, gCharacter.mHeight, SRCAND);
-	BitBlt(gMemDC, gCharacter.mPosX, gCharacter.mPosY, gCharacter.mWidth, gCharacter.mHeight,
-		gBufDC, gSpriteIndex*gCharacter.mWidth, 0, SRCPAINT);
+	//BitBlt(gMemDC, gCharacter.mPosX, gCharacter.mPosY, gCharacter.mWidth, gCharacter.mHeight,
+	//	gBufDC, gSpriteIndex*gCharacter.mWidth, gCharacter.mHeight, SRCAND);
+	//BitBlt(gMemDC, gCharacter.mPosX, gCharacter.mPosY, gCharacter.mWidth, gCharacter.mHeight,
+	//	gBufDC, gSpriteIndex*gCharacter.mWidth, 0, SRCPAINT);
 
 	if (++gSpriteIndex >= 8)
 	{

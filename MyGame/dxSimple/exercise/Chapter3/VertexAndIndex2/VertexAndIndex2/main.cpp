@@ -1,5 +1,5 @@
 /************************************************************************
-* Draw a man with cat ears while smiling, using vertices&indices                                                                  
+* Draw a man using vertices&indices                                                                  
 ************************************************************************/
 #include <windows.h>
 #include <time.h>
@@ -70,7 +70,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		return -1;
 	}
 
-	HWND hwnd = CreateWindow(_T("ClassName"), _T("abc"), WS_OVERLAPPEDWINDOW,
+	HWND hwnd = CreateWindow(_T("ClassName"), _T("A Simple Man"), WS_OVERLAPPEDWINDOW,
 		0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, nullptr, nullptr, hInstance, nullptr);
 
 	ShowWindow(hwnd, nShowCmd);
@@ -175,8 +175,8 @@ bool Direct3DInit(HWND hwnd)
 	}
 	SAFE_RELEASE(pD3D9);
 
-	//gPD3DDevice->SetRenderState(D3DRS_LIGHTING, false);			//关闭光照
-	//gPD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);	//背面消隐
+	//gPD3DDevice->SetRenderState(D3DRS_LIGHTING, false);			
+	//gPD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);	
 
 	
 	if (!ObjectInit(hwnd))
@@ -445,9 +445,8 @@ bool ObjectInit(HWND hwnd)
 	pVerticeSrc = (void*)((int)pVerticeSrc + sizeof(verticesLeftFoot));
 	memcpy(pVerticeSrc, verticesRightFoot, sizeof(verticesRightFoot));
 	pVerticeSrc = (void*)((int)pVerticeSrc + sizeof(verticesRightFoot));
-	/**
-	 *	Then copy to vertex buffer
-	 *	*/
+
+	//Then copy to vertex buffer
 	gPD3DDevice->CreateVertexBuffer(verticesNumSum*sizeof(CUSTOM_VERTEX), 0, D3DFVF_CUSTOM_VERTEX, D3DPOOL_DEFAULT, &gPVertexBuffer, nullptr);
 	void* pVertices;
 	gPVertexBuffer->Lock(0, verticesNumSum*sizeof(CUSTOM_VERTEX), (void**)(&pVertices), 0);
@@ -561,7 +560,7 @@ bool ObjectInit(HWND hwnd)
 	indicesLeftHand[23] = currVerticesNum;
 	currVerticesNum += 9;
 	indicesNumSum += 24;
-	//fill in the left foot indices
+		//fill in the left foot indices
 	for (int i = 0; i < 8; i++)
 	{
 		indicesLeftFoot[i * 3] = currVerticesNum;
@@ -618,7 +617,7 @@ bool ObjectInit(HWND hwnd)
 	gPIndexBuffer->Unlock();
 
 
-	gPD3DDevice->SetRenderState(D3DRS_CULLMODE, false);   //关掉背面消隐，无论是否顺时针，随机的那个三角形都会显示。 
+	gPD3DDevice->SetRenderState(D3DRS_CULLMODE, false);   
 	return true;
 }
 

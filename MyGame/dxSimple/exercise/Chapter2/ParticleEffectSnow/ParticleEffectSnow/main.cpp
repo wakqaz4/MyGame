@@ -1,5 +1,5 @@
 /************************************************************************
-* Simulates snow particle effects
+* Simulates snow particle effects with TransparentBlt.
 ************************************************************************/
 #include <windows.h>
 #include <tchar.h>
@@ -149,15 +149,20 @@ void GameUpdate(HWND hwnd, DWORD tickMilliSecond)
 	}
 	for (int i = 0; i < gSnowNum; i++)
 	{
-		snow[i].x += (rand() % 12) - 6;
+		snow[i].x += (rand() % 13) - 6;
 		snow[i].y += (rand() % 3) + 5;
 		if (snow[i].x >= gRect.right)
 		{
 			snow[i].x = gRect.right - 10;
 		}
+		else if (snow[i].x <= gRect.left)
+		{
+			snow[i].x = gRect.left + 10;
+		}
 		if (snow[i].y >= gRect.bottom)
 		{
-			snow[i].y = 0;
+			snow[i].y = 0;	
+			snow[i].x = rand() % gRect.right;
 		}
 		SelectObject(gBufDC, gBmpSprite);
 		TransparentBlt(gMemDC, snow[i].x, snow[i].y, 30, 30, gBufDC, 0, 0, 30, 30, RGB(0, 0, 0));

@@ -1,8 +1,7 @@
 /************************************************************************
 * This program draws a cube with vertices&indices, while using a texture
-* to fit on the cube's surface
+* to fit on the cube's surface.
 ************************************************************************/
-
 #include <windows.h>
 #include <tchar.h>
 #include <time.h>
@@ -219,7 +218,6 @@ bool ObjectInit()
 	D3DXCreateTextureFromFileEx(gD3DDevice.m_pD3DDevice, L"pal5q.jpg", 0, 0, 6, 0, D3DFMT_X8R8G8B8,
 		D3DPOOL_MANAGED, D3DX_DEFAULT, D3DX_DEFAULT, 0xFF000000, 0, 0, &gPTexture);
 
-	// 设置材质
 	D3DMATERIAL9 mtrl;
 	::ZeroMemory(&mtrl, sizeof(mtrl));
 	mtrl.Ambient = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
@@ -234,14 +232,14 @@ bool ObjectInit()
 	light.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	light.Specular = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 	light.Direction = D3DXVECTOR3(1.0f, 1.0f, 0.0f);
-	gD3DDevice.m_pD3DDevice->SetLight(0, &light); //设置光源  
-	gD3DDevice.m_pD3DDevice->LightEnable(0, true);//启用光照  
+	gD3DDevice.m_pD3DDevice->SetLight(0, &light); 
+	gD3DDevice.m_pD3DDevice->LightEnable(0, true);
 
-	// 开始设置渲染状态
-	gD3DDevice.m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);   //开启背面消隐
-	gD3DDevice.m_pD3DDevice->SetRenderState(D3DRS_AMBIENT, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)); //设置环境光
+	
+	gD3DDevice.m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);  
+	gD3DDevice.m_pD3DDevice->SetRenderState(D3DRS_AMBIENT, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)); 
 
-	//各向异性过滤
+	
 	gD3DDevice.m_pD3DDevice->SetSamplerState(0, D3DSAMP_MAXANISOTROPY, 3);
 	gD3DDevice.m_pD3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC);
 	gD3DDevice.m_pD3DDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
@@ -372,7 +370,7 @@ void Direct3DRender(HWND hwnd)
 	gD3DDevice.m_pD3DDevice->SetFVF(D3DFVF_CUSTOM_VERTEX);
 	gD3DDevice.m_pD3DDevice->SetIndices(gPIndexBuffer);
 	gD3DDevice.m_pD3DDevice->SetTexture(0, gPTexture);
-	gD3DDevice.m_pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 24, 0, 12);//利用索引缓存配合顶点缓存绘制图形
+	gD3DDevice.m_pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 24, 0, 12);
 
 	gPFont->DrawTextW(nullptr, _T("Fake"), -1, &formatRect, DT_TOP | DT_RIGHT, D3DCOLOR_XRGB(23, 144, 2));
 

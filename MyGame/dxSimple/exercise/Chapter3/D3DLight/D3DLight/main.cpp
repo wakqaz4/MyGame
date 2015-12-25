@@ -1,8 +1,8 @@
 /************************************************************************
-* This is a program which uses D3D meshes, material and light, where material
-* includes ambient , diffuse , specular, emissive;
-* Here D3D9 used Phong-lightening-model. Which is introduced detailedly
-* in GameEngineArchitecture.
+* This is a program which uses D3D mesh, material and light, where material
+* includes ambient, diffuse, specular, emissive;
+* Here D3D9 used Phong-lightening-model, which is introduced detailedly
+* in <GameEngineArchitecture>.
 * //  [12/8/2015 Zhaoyu.Wang]
 ************************************************************************/
 #include <windows.h>
@@ -203,7 +203,7 @@ void Direct3DRender(HWND hwnd)
 	ZeroMemory(&material, sizeof(material));
 	material.Ambient = D3DXCOLOR(0.3f, 0.1f, 0.5f, 1.0f);
 	material.Diffuse = D3DXCOLOR(0.4f, 0.6f, 0.6f, 1.0f);
-	material.Specular = D3DXCOLOR(0.3f, 0.3f, 0.3f, 0.3f);
+	material.Specular = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.3f);
 	material.Emissive = D3DXCOLOR(0.3f, 0.0f, 0.1f, 1.0f);
 	gPD3DDevice->SetMaterial(&material);
 	gPBox->DrawSubset(0);
@@ -260,12 +260,13 @@ bool ObjectInit(HWND hwnd)
 	D3DXCreateTorus(gPD3DDevice, 1.0f, 2.0f, 25, 25, &gPTorus, 0);
 	D3DXCreateSphere(gPD3DDevice, 2.0f, 25, 25, &gPSphere, 0);
 
-
+	//D3DMATERIAL9 is a struct with diffuse, specular, ambient, and emissive;
+	//There is also power typed float, however its usage not known yet.
 	D3DMATERIAL9 material;
 	ZeroMemory(&material, sizeof(material));
 	material.Ambient = D3DXCOLOR(0.5f, 0.5f, 0.7f, 1.0f);
 	material.Diffuse = D3DXCOLOR(0.4f, 0.6f, 0.6f, 1.0f);
-	material.Specular = D3DXCOLOR(0.3f, 0.3f, 0.3f, 0.3f);
+	material.Specular = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);
 	material.Emissive = D3DXCOLOR(0.3f, 0.0f, 0.1f, 1.0f);
 	gPD3DDevice->SetMaterial(&material);	
 
@@ -302,14 +303,12 @@ void MatrixSet()
 
 VOID LightSet(LPDIRECT3DDEVICE9 pd3dDevice, UINT nType)
 {
-	//定义一个光照类型并初始化
 	static D3DLIGHT9 light;
-	::ZeroMemory(&light, sizeof(light));
+	ZeroMemory(&light, sizeof(light));
 
-	//一个switch，给3种光源选项
 	switch (nType)
 	{
-	case 1:     //点光源
+	case 1:     
 		light.Type = D3DLIGHT_POINT;
 		light.Ambient = D3DXCOLOR(0.6f, 0.6f, 0.6f, 1.0f);
 		light.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
@@ -320,14 +319,14 @@ VOID LightSet(LPDIRECT3DDEVICE9 pd3dDevice, UINT nType)
 		light.Attenuation2 = 0.0f;
 		light.Range = 300.0f;
 		break;
-	case 2:     //平行光
+	case 2:     
 		light.Type = D3DLIGHT_DIRECTIONAL;
 		light.Ambient = D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f);
 		light.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 		light.Specular = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);
 		light.Direction = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
 		break;
-	case 3:     //聚光灯
+	case 3:     
 		light.Type = D3DLIGHT_SPOT;
 		light.Position = D3DXVECTOR3(100.0f, 100.0f, 100.0f);
 		light.Direction = D3DXVECTOR3(-1.0f, -1.0f, -1.0f);
@@ -344,8 +343,8 @@ VOID LightSet(LPDIRECT3DDEVICE9 pd3dDevice, UINT nType)
 		break;
 	}
 
-	pd3dDevice->SetLight(0, &light); //设置光源
-	pd3dDevice->LightEnable(0, true);//启用光照
-	pd3dDevice->SetRenderState(D3DRS_AMBIENT, D3DCOLOR_XRGB(36, 36, 36));   //设置一下环境光
+	pd3dDevice->SetLight(0, &light); 
+	pd3dDevice->LightEnable(0, true);
+	pd3dDevice->SetRenderState(D3DRS_AMBIENT, D3DCOLOR_XRGB(36, 36, 36));  
 	 
 }

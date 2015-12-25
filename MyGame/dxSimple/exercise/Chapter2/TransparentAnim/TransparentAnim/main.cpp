@@ -1,3 +1,6 @@
+/************************************************************************
+* This program implements transparent animation using TransparentBlt.
+************************************************************************/
 #include <windows.h>
 #include <tchar.h>
 #include <time.h>
@@ -5,7 +8,9 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "Msimg32.lib")
 
-
+//////////////////////////////////////////////////////////////////////////
+// External functions and global vars  
+//////////////////////////////////////////////////////////////////////////
 extern LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 extern bool GameInit(HWND hwnd);
 extern void GameUpdate(HWND hwnd);

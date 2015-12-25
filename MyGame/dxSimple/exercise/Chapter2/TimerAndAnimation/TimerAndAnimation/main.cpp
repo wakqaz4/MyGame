@@ -1,5 +1,7 @@
 /************************************************************************
-* Initialize an timer and keep updating images to form an animation                                                                  
+* Initialize an timer and keep updating images to form an animation.
+* Cause Timer has a very very low priority, the WM_PAINT event cannot be 
+* dealt with in the message loop, or else timer will not be triggered.
 ************************************************************************/
 #include <windows.h>
 #include <tchar.h>
