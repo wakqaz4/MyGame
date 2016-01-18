@@ -96,8 +96,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	wndClass.lpszMenuName = nullptr;
 	wndClass.style = CS_HREDRAW | CS_VREDRAW;
 
-	char* temp = GetCommandLineA();
-
 	if (!RegisterClass(&wndClass))
 	{
 		return -1;
@@ -393,8 +391,11 @@ void MatrixSet()
 	gPD3DDevice->SetTransform(D3DTS_VIEW, &matView);
 
 	D3DXMATRIX matProj;
-	D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI / 6.0f, WINDOW_WIDTH / WINDOW_HEIGHT, 1.0f, 1000.0f);
+//	D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI / 6.0f, WINDOW_WIDTH / WINDOW_HEIGHT, 1.0f, 1000.0f);
+	//It seems orthographical view is better than perspective view while testing
+	D3DXMatrixOrthoLH(&matProj, WINDOW_WIDTH, WINDOW_HEIGHT, 1.0f, 1000.0f);
 	gPD3DDevice->SetTransform(D3DTS_PROJECTION, &matProj);
+
 
 	D3DVIEWPORT9 viewPort;
 	viewPort.Width = WINDOW_WIDTH;
@@ -515,6 +516,7 @@ void Direct3DRender(HWND hwnd)
 	mtrl.Specular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	gPD3DDevice->SetMaterial(&mtrl);
 
+	gPD3DDevice->SetRenderState(D3DRS_LIGHTING, false);
 	gPD3DDevice->SetTransform(D3DTS_WORLD, &matCubeTrans);
 	gPD3DDevice->SetTexture(0, gPTexture);
 	gPD3DDevice->SetStreamSource(0, gPCubeVertexBuffer, 0, sizeof(SUVVertex));
@@ -528,7 +530,7 @@ void Direct3DRender(HWND hwnd)
 	light.Type = D3DLIGHT_POINT;
 	light.Ambient = D3DXCOLOR(0.6f, 0.6f, 0.6f, 1.0f);
 	light.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	light.Specular = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);
+	light.Specular = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	
 	light.Position = D3DXVECTOR3(0.0f, 200.0f, 0.0f);
 	light.Attenuation0 = 1.0f;
 	light.Attenuation1 = 0.0f;
