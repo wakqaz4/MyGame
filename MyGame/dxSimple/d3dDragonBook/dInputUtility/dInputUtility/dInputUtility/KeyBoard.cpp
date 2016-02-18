@@ -3,8 +3,8 @@
 
 using namespace GD;
 
-CKeyBoard::CKeyBoard()
-: CDXInputDevice("KeyBoard", GUID_SysKeyboard)
+CKeyboard::CKeyboard()
+: CDXInputDevice("Keyboard", GUID_SysKeyboard)
 {
 	::ZeroMemory(m_keyboardBuffer, sizeof(m_keyboardBuffer));
 	/**
@@ -20,7 +20,7 @@ CKeyBoard::CKeyBoard()
 	Accquire();
 }
 
-void CKeyBoard::Update(bool focus)
+void CKeyboard::Update(bool focus)
 {
 	if (!focus)
 	{
@@ -45,7 +45,8 @@ void CKeyBoard::Update(bool focus)
 					int key = rgdod[i].dwOfs;
 					bool pressed = ((rgdod[i].dwData & 0x80) != 0);
 					/**
-					 *	Should've processed event here*/
+					 *	Should've processed event here
+					 *	*/
 					//ProcessEvent(key, pressed);
 				}
 				break;
@@ -76,11 +77,20 @@ void CKeyBoard::Update(bool focus)
 	
 }
 
-bool CKeyBoard::IsKeyDown(int iKey)
+bool CKeyboard::IsKeyDown(int iKey)
 {
 	if (m_keyboardBuffer[iKey] & 0x80)
 	{
 		return true;
 	}
 	return false;
+}
+
+bool CKeyboard::IsKeyUp(int iKey)
+{
+	if (m_keyboardBuffer[iKey] & 0x80)
+	{
+		return false;
+	}
+	return true;
 }

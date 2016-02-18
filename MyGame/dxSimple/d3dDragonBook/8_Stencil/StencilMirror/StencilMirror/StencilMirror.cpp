@@ -1,7 +1,7 @@
 /************************************************************************
-* Blend material with alpha channel.
-* D3D9 dragon book's example in chapter 7.
-* // [2016/1/15 10:52 Zhaoyu.Wang]
+* Use stencil to implement mirror's reflection effect.
+* D3D9 dragon book's example in chapter 8.
+* // [2016/1/19 14:45 Zhaoyu.Wang]  
 ************************************************************************/
 #include "tchar.h"
 #include "../../../win32Utility/win32Utility/win32Utility/win32Utility.h"

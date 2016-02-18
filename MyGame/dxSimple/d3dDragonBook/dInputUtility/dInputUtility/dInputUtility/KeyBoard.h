@@ -8,12 +8,13 @@ namespace GD
 {
 	typedef char charBufferUnit;
 
-	class CKeyBoard:public CDXInputDevice
+	class CKeyboard:public CDXInputDevice
 	{
 	public:
 		void Update(bool focus);
 		bool IsKeyDown(int iKey);
-		CKeyBoard();
+		bool IsKeyUp(int iKey);
+		CKeyboard();
 	private:
 		bool m_buffered;
 	public:

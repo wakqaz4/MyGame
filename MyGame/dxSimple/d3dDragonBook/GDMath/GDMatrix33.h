@@ -15,10 +15,11 @@
 #pragma once
 
 #include <assert.h>
+#include "GDVector3.h"
 
 namespace GD
 {
-	extern const float VECTOR3_EPSILON;
+
 	template<typename F> class CMatrix44;
 	template<typename F> class CMatrix34;
 	template<typename F> class CVector3;

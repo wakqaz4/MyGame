@@ -82,7 +82,7 @@
 
 namespace GD
 {
-	const float PI = 3.14159265354f;
+
 	enum CAMERA_TYPE
 	{
 		PERSPECTIVE,

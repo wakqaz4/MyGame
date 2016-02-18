@@ -83,17 +83,21 @@ bool CWindow::EnterMsgLoop(PFuncDisplay display, PFuncGamePlay runGame)
 			static DWORD currTime = 0.0f;
 			currTime = ::GetTickCount();
 			float deltaTime = float(currTime - prevTime);
+			/**
+			 *	Well, deltaTime has a unit of ms...
+			 */
 			if (deltaTime >= GD::DISPLAY_INTERVAL)
 			{
 				/**
 				 *	 Update the screen with 60FPS
 				 *	 */
 				prevTime = currTime;
-
+				runGame(deltaTime);
 				/**
 				 *	May something be preProcessed here?
 				 *	*/
 				display(deltaTime);
+
 			}
 			else
 			{

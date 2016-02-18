@@ -357,7 +357,6 @@ void CALLBACK RenderFunc(void)
 	gEnv.m_pDXDevice->GetD3DDevice()->SetTransform(D3DTS_WORLD, &textMat);
 	gPText->DrawSubset(0);
 
-
 	D3DXMATRIX W;
 	D3DXMatrixIdentity(&W);
 	gEnv.m_pDXDevice->GetD3DDevice()->SetTransform(D3DTS_WORLD, &W);

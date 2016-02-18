@@ -47,19 +47,22 @@
 ************************************************************************/
 #ifndef _GD_MATH_H_
 #define _GD_MATH_H_
+#pragma once
 
+#include "GDMatrix.h"
+#include "GDVector.h"
+#include <stdlib.h>
 #include <math.h>
 
 namespace GD
 {
-	typedef float f32;
-	typedef double f64;
+	const float PI = 3.14159265354f;
 
-	f32 Sqrt(f32 num){ return sqrtf(num); }
-	f64 Sqrt(f64 num){ return sqrt(num); }
+	inline f32 Sqrt(f32 num){ return sqrtf(num); }
+	inline f64 Sqrt(f64 num){ return sqrt(num); }
 
 #if defined(_CPU_X86) && defined(_MSC_VER) && !defined(_DEBUG) && !defined(LINUX)
-	void SinCos(f32 angle, f32* pSin, f32* pCos)
+	inline void SinCos(f32 angle, f32* pSin, f32* pCos)
 	{
 		__asm
 		{
@@ -71,7 +74,7 @@ namespace GD
 				FSTP	DWORD PTR [eDX]
 		}
 	}
-	void SinCos(f64 angle, f64* pSin, f64* pCos)
+	inline void SinCos(f64 angle, f64* pSin, f64* pCos)
 	{
 		__asm
 		{
@@ -84,15 +87,23 @@ namespace GD
 		}
 	}
 #else
-	void SinCos(f64 angle, f64* pSin, f64* pCos){ *pSin = f64(sin(PI*angle/180)); *pCos = f64(cos(PI*angle/180)); }
-	void SinCos(f32 angle, f32* pSin, f32* pCos){ *pSin = f32(sin(PI*angle/180)); *pCos = f32(cos(PI*angle/180)); }
+	inline void SinCos(f64 angle, f64* pSin, f64* pCos)
+	{ 
+		*pSin = f64(sin(PI*angle/180)); 
+		*pCos = f64(cos(PI*angle/180)); 
+	}
+	inline void SinCos(f32 angle, f32* pSin, f32* pCos)
+	{ 
+		*pSin = f32(sin(PI*angle/180)); 
+		*pCos = f32(cos(PI*angle/180)); 
+	}
 #endif
 	template<typename F>
 	bool IsValidNumber(F num)
 	{
 		/**
-		 *	A float number, will be invalid if V = NAN
-		 *	*/
+		*	A float number, will be invalid if V = NAN
+		*	*/
 		if (sizeof(F) == 4)
 		{
 			unsigned int toInt = *(unsigned int*)(&num);
@@ -100,8 +111,8 @@ namespace GD
 			return !((toInt&expMask) == expMask);
 		}
 		/**
-		 *	Double number, will be invalid if V = NAN
-		 *	*/
+		*	Double number, will be invalid if V = NAN
+		*	*/
 		else if (sizeof(F) == 8)
 		{
 			unsigned long long toInt = *(unsigned long long*)(&num);
@@ -114,8 +125,32 @@ namespace GD
 		}
 		return true;
 	}
-
-
+	inline f32 GetRandomFloat(f32 lowBound, f32 highBound)
+	{
+		if (lowBound >= highBound)
+		{
+			return lowBound;
+		}
+		f32 temp = 0.0001f*(rand() % 10000);
+		return (temp*(highBound - lowBound) + lowBound);
+	}
+	inline Vector3 GetRandomVector(Vector3 const&  lowBound, Vector3 const&  highBound)
+	{
+		Vector3 temp;
+		temp.x = GetRandomFloat(lowBound.x, highBound.x);
+		temp.y = GetRandomFloat(lowBound.y, highBound.y);
+		temp.z = GetRandomFloat(lowBound.z, highBound.z);
+		return temp;
+	}
+	/**
+	 *	Better this method than the upward.
+	 */
+	inline void GetRandomVector(Vector3& out, const Vector3& lowBound, const Vector3& highBound)
+	{
+		out.x = GetRandomFloat(lowBound.x, highBound.x);
+		out.y = GetRandomFloat(lowBound.y, highBound.y);
+		out.z = GetRandomFloat(lowBound.z, highBound.z);
+	}
 }
 
 #endif

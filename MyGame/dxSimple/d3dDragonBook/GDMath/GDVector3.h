@@ -1,17 +1,19 @@
 /************************************************************************
 * Vector3.
 * Here I implemented overLoad of operator + - * /, += -= *= /=, == =, 
-* and Cross, Normalize.
+* and Cross, Normali8ze.
 * //  [1/7/2016 Zhaoyu.Wang]
 ************************************************************************/
 
 #ifndef _GD_VECTOR3_H_
 #define _GD_VECTOR3_H_
+#pragma once
 
 namespace GD
 {
 	const float VECTOR3_EPSILON = 0.001f;
 	const double D_VECTOR3_EPSILON = 0.0001;
+	
 	template<typename F>
 	class CVector3
 	{
