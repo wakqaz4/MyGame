@@ -85,6 +85,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	/**
 	*	Insert object init here, such as input/mouse/keyboard, camera, 
 	*	meshes, font, vertices, material, light, texture, terrain;
+	*	[2016/8/6 ]
+	*	Actually, acrodding to render pipeLine, object inited here should mainly be
+	*	vertices, as material, light, texture are related with renderState;
 	*	*/
 	if (!ObjectInit(hInstance))
 	{
